@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
+#include<time.h> 
 
 void select_opt() {
   printf("\n1. Select file to process");
@@ -20,6 +21,28 @@ void file_process() {
   printf("\n\nEnter a choice from 1 to 3: ");
 }
 
+int enter() {
+  int input;
+  scanf("%d", &input);
+  return input;
+}
+
+void create_movie_list(char f_name[]) {
+  char f_dir[100];
+  sprintf(f_dir, "./%s", f_name);
+
+  DIR* curr_Dir = opendir(f_dir);
+  struct dirent *aDir;
+
+  FILE *file = NULL;
+
+  char dir_n[100];
+  sprintf(dir_n, "%s/2008.txt", f_name);
+  file = fopen(dir_n, "w");
+
+  fclose(file);
+}
+
 void largest() {
   DIR* curr_Dir = opendir(".");
   struct dirent *aDir;
@@ -27,6 +50,12 @@ void largest() {
 
   unsigned int size = 0;
   char *name;
+
+  char file_name[20];
+  char myname[20] = "ohjaeg.movies.";
+  srand(time(0));
+  int num = rand() % 99999;
+  sprintf(file_name, "%s%d", myname, num);
 
   // Go through all the entries
   while((aDir = readdir(curr_Dir)) != NULL){
@@ -57,8 +86,9 @@ void largest() {
   // Close the directory
   closedir(curr_Dir);
   printf("Now processing the chosen file named %s\n", name);
-  int make = mkdir("ohjaeg.movies.random#", 0777); //create a directory
-  printf("Created directory with name chaudhrn.movies.89383\n");
+  int make = mkdir(file_name, 0750); //create a directory
+  printf("Created directory with name %s\n", file_name);
+  create_movie_list(file_name);
   printf("\n");
 }
 
@@ -69,6 +99,12 @@ void smallest() {
 
   unsigned int size = 999999999;
   char *name;
+
+  char file_name[20];
+  char myname[20] = "ohjaeg.movies.";
+  srand(time(0));
+  int num = rand() % 99999;
+  sprintf(file_name, "%s%d", myname, num);
 
   // Go through all the entries
   while((aDir = readdir(curr_Dir)) != NULL){
@@ -99,15 +135,57 @@ void smallest() {
   // Close the directory
   closedir(curr_Dir);
   printf("Now processing the chosen file named %s\n", name);
-  int make = mkdir("ohjaeg.movies.random#", 0777); //create a directory
-  printf("Created directory with name chaudhrn.movies.89383\n");
+  int make = mkdir(file_name, 0750); //create a directory
+  printf("Created directory with name %s\n", file_name);
   printf("\n");
 }
 
-int enter() {
-  int input;
-  scanf("%d", &input);
-  return input;
+void find_name() {
+  DIR* curr_Dir = opendir(".");
+  struct dirent *aDir;
+  struct stat fileS;
+  char input[1000];
+  bool bol = false;
+
+  char file_name[20];
+  char myname[20] = "ohjaeg.movies.";
+  srand(time(0));
+  int num = rand() % 99999;
+  sprintf(file_name, "%s%d", myname, num);
+
+  printf("Enter the complete file name: ");
+  scanf("%s", input); 
+
+  while((aDir = readdir(curr_Dir)) != NULL){
+    if(aDir) {
+      if (strcmp(aDir->d_name, input) == 0) {
+        bol = true;
+      }
+    }
+  }
+
+  if(bol) {
+    closedir(curr_Dir);
+    printf("Now processing the chosen file named %s\n", input);
+    int make = mkdir(file_name, 0777); //create a directory
+    printf("Created directory with name %s\n", file_name);
+    printf("\n");
+  } else {
+    printf("The file %s was not found. Try again\n", input);
+    closedir(curr_Dir);
+    printf("\n");
+
+    int inp2;
+      file_process();
+      inp2 = enter();
+      if(inp2 == 1) {
+        largest();
+      } else if(inp2 == 2) {
+        smallest();
+      } else if(inp2 == 3) {
+        find_name();
+      }
+  }
 }
 
 void start_porg() {
@@ -126,7 +204,7 @@ void start_porg() {
       } else if(inp2 == 2) {
         smallest();
       } else if(inp2 == 3) {
-
+        find_name();
       }
     }
   }
