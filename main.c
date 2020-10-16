@@ -7,6 +7,71 @@
 #include <string.h>
 #include<time.h> 
 
+struct movie {//set up the blank struct to contain the data
+  char *title;
+  int year;
+  char *languages;
+  float rating;
+
+  struct movie *next;
+};
+
+struct movie *createList(char *currLine) {
+  struct movie *currmovie = malloc(sizeof(struct movie));
+  char *saveptr;
+
+  char *temp = strtok_r(currLine, ",", &saveptr); //title of the movie save data into saveptr 
+  currmovie->title = calloc(strlen(temp) + 1, sizeof(char));
+  strcpy(currmovie->title, temp);
+
+  temp = strtok_r(NULL, ",", &saveptr); // year
+  currmovie->year = atoi(temp); //character to int
+
+  temp = strtok_r(NULL, ",", &saveptr); //lang
+  currmovie->languages = calloc(strlen(temp) + 1, sizeof(char));
+  strcpy(currmovie->languages, temp);
+
+  temp = strtok_r(NULL, ",\n", &saveptr); // rating
+  currmovie->rating = atof(temp);
+
+  currmovie->next = NULL;
+  return currmovie;
+}
+
+struct movie *processFile (char *file) { //link file
+
+  char *temp;
+  temp = malloc(100 * sizeof(char));
+  strcpy(temp, file);
+  FILE *data = fopen(temp,"r"); //data
+  if (data == NULL) printf("OPEN FILE Failed\n");
+  char line[100];
+
+  struct movie *head = NULL; //create head for the link
+  struct movie *tail = NULL; //tail
+
+  if(data != NULL) { //check the data is real
+    fgets(line, sizeof line, data); //skip the first line
+    while(fgets(line, sizeof line, data) != NULL) { //loop until the file hits the blank
+      struct movie *node = createList(line);
+
+      if(head == NULL) { 
+        head = node;
+        tail = node;
+      } else {
+        tail->next = node;
+        tail = node;
+      }
+    }
+  }
+
+  fclose(data); //cloase the file
+  free(temp);
+
+  return head;
+}
+
+
 void select_opt() {
   printf("\n1. Select file to process");
   printf("\n2. Exit the program");
@@ -27,20 +92,55 @@ int enter() {
   return input;
 }
 
-void create_movie_list(char f_name[]) {
-  char f_dir[100];
-  sprintf(f_dir, "./%s", f_name);
-
-  DIR* curr_Dir = opendir(f_dir);
-  struct dirent *aDir;
-
+void comp(char dirc[], struct movie *mv) {
+  struct movie *temp = mv;
+  int check = 0;
   FILE *file = NULL;
 
-  char dir_n[100];
-  sprintf(dir_n, "%s/2008.txt", f_name);
-  file = fopen(dir_n, "w");
+  if(mv->next != NULL) { //check the struct is the last one
+    char dir_n[100];
+    sprintf(dir_n, "%s/%d.txt", dirc, temp->year);
+    file = fopen(dir_n, "w");
 
+    while(mv != NULL) { //compare until the struct is over
+      if(temp->year == mv->year) { //if year is same
+        check = 1;
+        fprintf(file,"%s\n", mv->title);
+      }
+      mv = mv->next;
+    } 
+  }
   fclose(file);
+}
+
+void create_movie_list(char f_name[], char f_csv[]) {
+
+  struct movie *mv = processFile(f_csv);
+  
+  int year[100], i = 0, k = 0;
+  comp(f_name, mv);
+  year[i] = mv->year; //save the first year into the array
+  i++;
+
+
+  while(mv != NULL) {
+    for(int j = 0; j < i; j++) {
+      if(mv->year == year[j]) { //check if there is any same year
+        k = 1;
+      }
+    }
+
+    if(k == 1) { //if the computer find the same year then move to the next
+      mv = mv->next;
+    } else { //if not then save year to the value
+      comp(f_name, mv); // run to find the high rate
+      year[i] = mv->year;
+      i++;
+      mv = mv->next;
+    }
+    k = 0; //reset the status
+  }
+  printf("\n");
 }
 
 void largest() {
@@ -88,7 +188,7 @@ void largest() {
   printf("Now processing the chosen file named %s\n", name);
   int make = mkdir(file_name, 0750); //create a directory
   printf("Created directory with name %s\n", file_name);
-  create_movie_list(file_name);
+  create_movie_list(file_name, name);
   printf("\n");
 }
 
