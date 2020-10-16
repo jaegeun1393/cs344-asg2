@@ -12,6 +12,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include<time.h> 
+#include <fcntl.h>
+#include <unistd.h>
 
 struct movie {//set up the blank struct to contain the data
   char *title;
@@ -101,22 +103,24 @@ int enter() { //to get int type input
 void comp(char dirc[], struct movie *mv) { //to make the text file to list movie in same year
   struct movie *temp = mv;
   int check = 0;
-  FILE *file = NULL;
+  int file;
 
   if(mv->next != NULL) { //check the struct is the last one
     char dir_n[100];
     sprintf(dir_n, "%s/%d.txt", dirc, temp->year);
-    file = fopen(dir_n, "w");
+    file = open(dir_n, O_RDWR | O_CREAT | O_TRUNC, 0640);
 
     while(mv != NULL) { //compare until the struct is over
       if(temp->year == mv->year) { //if year is same
+        char msg[100];
+        sprintf(msg, "%s\n", mv->title);
         check = 1;
-        fprintf(file,"%s\n", mv->title); //put the movie title into the text file
+        write(file, msg, strlen(mv->title) + 1); //put the movie title into the text file
       }
       mv = mv->next;
     } 
   }
-  fclose(file);
+  //close(file);
 }
 
 void create_movie_list(char f_name[], char f_csv[]) { 
