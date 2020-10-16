@@ -182,6 +182,7 @@ void largest() { //find the largest file
         if (strcmp("vsc.", tmp) == 0) {  //check it it is the .csv file backword
           if (!stat(aDir->d_name, &fileS)) {
             if((unsigned int)fileS.st_size > size) { //if the size is bigger then keep the name of the file
+              size = (unsigned int)fileS.st_size; //set the size is equal to the largest for the next compare.
               name = aDir->d_name;
             }
           }
@@ -231,6 +232,7 @@ void smallest() { //have the similar function
         if (strcmp("vsc.", tmp) == 0) {  //check it it is the .csv file
           if (!stat(aDir->d_name, &fileS)) {
             if((unsigned int)fileS.st_size < size) { //if small then keep the data file
+              size = (unsigned int)fileS.st_size; //set the size is equal to the smallest for the next compare.
               name = aDir->d_name;
             }
           }
