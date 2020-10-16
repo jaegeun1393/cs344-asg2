@@ -1,9 +1,9 @@
 How to run the program?
 
 1. Compile
-The way of compile: gcc --std=gnu99 -o movie main.c
+The way of compile: gcc --std=gnu99 -o movies_by_year main.c
 
-How to run the program: ./movie 
+How to run the program: ./movies_by_year 
 
 2. When you run the program, you will going to have
   
