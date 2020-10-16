@@ -1,0 +1,21 @@
+How to run the program?
+
+1. Compile
+The way of compile: gcc --std=gnu99 -o movie main.c
+
+How to run the program: ./movie 
+
+2. When you run the program, you will going to have
+  
+  1. Select file to process
+  2. Exit the program
+
+
+2-1. You will see the inner_menu once you enter 1
+  
+  Which file you want to process
+  Enter 1 to pick the largest file
+  Enter 2 to pick the smallest file
+  Enter 3 to specify the name of a file
+  
+2-2. And you can exit the program by enter 2
