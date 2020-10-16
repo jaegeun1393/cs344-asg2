@@ -237,6 +237,7 @@ void smallest() {
   printf("Now processing the chosen file named %s\n", name);
   int make = mkdir(file_name, 0750); //create a directory
   printf("Created directory with name %s\n", file_name);
+  create_movie_list(file_name, name);
   printf("\n");
 }
 
@@ -269,6 +270,7 @@ void find_name() {
     printf("Now processing the chosen file named %s\n", input);
     int make = mkdir(file_name, 0777); //create a directory
     printf("Created directory with name %s\n", file_name);
+    create_movie_list(file_name, input);
     printf("\n");
   } else {
     printf("The file %s was not found. Try again\n", input);
