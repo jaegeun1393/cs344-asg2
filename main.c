@@ -225,7 +225,7 @@ void smallest() { //have the similar function
       for(int i = 0; i < 6; i++) {
         tmp[i] = aDir->d_name[i];
       }
-      if (strcmp("movie_", tmp) == 0) { //if the first 6 letters are "movie_"
+      if (strcmp("movies_", tmp) == 0) { //if the first 6 letters are "movie_"
         for(int i = 0; i < 6; i++) { tmp[i] = '\0';} //reset tmp
 
         int k = 0;
